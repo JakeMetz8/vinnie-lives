@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Vinnie live website - read photo sensor</title>
+  <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body>
+  <div id="app">
+    <div class="text-center">
+        <div class="text-3xl font-semibold text-center mt-8">{{ledStatus}}</div>
+
+        <div class="text-xl font-medium p-4">Toggle your LED on and off</div>
+
+        <div class="flex items-center justify-center my-2">
+            <label for="access_token">Access Token</label>
+            <input
+              v-model="accessToken"
+              placeholder="your access token"
+              class="border ml-4">
+        </div>
+
+        <div class="flex items-center justify-center my-2">
+          <label for="ON">Turn your LED "ON"</label>
+          <input type="radio" v-model="ledStatus" value="ON" class="ml-6">
+        </div>
+
+        <div class="flex items-center justify-center  my-2">
+          <label for="off">Turn your LED "OFF"</label>
+          <input type="radio" v-model="ledStatus" value="OFF" class="ml-6">
+        </div>
+
+        <button
+          type="submit"
+          class="flex-grow-0 bg-blue-500 text-gray-100 px-4 py-2 mt-4 rounded-full"
+          @click="toggleLed"
+        >
+          Do it!
+        </button>
+
+        <div class="text-3xl font-semibold text-center mt-8">{{sensorValue}}</div>
+
+        <div class="text-xl font-medium p-4">Get the Sensor Value</div>
+
+        <div class="flex items-center justify-center  my-2">
+          <label for="access_token">Access Token</label>
+          <input 
+            name="access_token"
+            placeholder="your access token"
+            class="border ml-4"
+          >
+        </div>
+
+        <button 
+          type="submit"
+          class="bg-blue-500 text-gray-100 px-4 py-2 mt-4 rounded-full"
+        >
+        Get it!
+        </button>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  
+  <script>
+    var app = new Vue({
+      el: '#app',
+      data: {
+        ledStatus: null,
+        sensorValue: null,
+        accessToken: null
+      },
+      methods: {
+        toggleLed() {
+          axios.post(`https://api.particle.io/v1/devices/26001c001047373338303630/led?access_token=${this.accessToken}`, {
+            arg: this.ledStatus
+          })
+          .then((response)=> {
+            console.log(response);
+          })
+          .catch((error) => {
+            console.log(error);
+          })
+        },
+        getSensorValue() {
+          axios.get(`https://api.particle.io/v1/devices/26001c001047373338303630/analogValue?access_token=${this.accessToken}`)
+          .then((response) => {
+            console.log(response)
+          })
+          .catch((error) => {
+            console.log(error);
+          })
+        }
+      }
+    })
+  </script>
+
+</body>
+</html>
